@@ -11,7 +11,7 @@ library(raster)
 library(landscapemetrics)
 
 # Code to list all the files in the '.tifs' subfolder and import them in the R workspace
-rasterList <- list.files("./tifs/", full.names = TRUE)
+rasterList <- list.files("./landscapes/tifs/", full.names = TRUE)
 rasterList <- rasterList[-46]  # this is some Windows file not part of the dataset
 
 # telling R that all the files in rasterList are, in fact, rasters
