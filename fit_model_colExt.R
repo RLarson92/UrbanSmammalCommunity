@@ -2,14 +2,14 @@
 #                                                #
 #     Dynamic Community Abundance Model          #
 #                                                #
-#     Last updated: 22 AUG 2023                  #
+#     Last updated: 25 JAN 2024                  #
 #                                                #
 ##################################################
 # This model is a community abundance model with fully modeled 'recruitment' (births + 
 # immigration) and 'survival' (1-[deaths + emigration]).
 
 #### MODEL SET-UP ####
-# load functions used to clean data
+# load functions used to clean data & other processes
 functions_to_load <- list.files("./functions/", full.names = TRUE)
 for(fn in functions_to_load){
   source(fn)
@@ -217,7 +217,7 @@ my_inits_colExt <- function(chain){
       gamma0 = rnorm(data_list$nspec),
       gamma1 = rnorm(data_list$nspec),
       R = R_init,
-      # no init for S needed because N = R + S so S is fixed?
+      # no init for S needed because N = R + S so S is fixed
       N = N_init,
       .RNG.name = switch(chain,
                          "1" = "base::Wichmann-Hill",
