@@ -1,6 +1,6 @@
 model{
   ### PRIORS
-  ## Hyperpriors (overall average distributions to pull species-specific responses from)
+  ## Hyperpriors (community average distributions to pull species-specific responses from)
   # for abundance
   mu.beta0 ~ dnorm(0, 0.1)
   tau.beta0 ~ dgamma(1, 1)
@@ -51,7 +51,7 @@ model{
   }
   
   ### MODEL
-  # State Process (initial condition)
+  # State Process (initial abundance)
   for (i in 1:nspec) {
     for (j in 1:nsite) {
       N[i,j,1] ~ dpois(lambda[i,j,1])
@@ -64,7 +64,7 @@ model{
 
   # State Process (transition model)
       for (t in 2:nseason) {
-        N[i,j,t] <- S[i,j,t] + R[i,j,t]
+        N[i,j,t] <- S[i,j,t] + R[i,j,t]  # 'S' for survivors, 'R' for recruits
         S[i,j,t] ~ dbin(phi[i,j,t], N[i,j,t-1])
         logit(phi[i,j,t]) <- phi0[i] + phi1[i]*PC1[j] + phi2[i]*contag[j]
         R[i,j,t] ~ dpois(gamma[i,j,t])
@@ -77,14 +77,4 @@ model{
       }
     }
   }
-  # # Deriving species richness on each site
-  # for (i in 1:nspec){
-  #   for (j in 1:nsite){
-  #     for (t in 1:nseason){
-  #       tmp <- sum(N[i,j,])
-  #       tmp[tmp>0] <- 1
-  #       rich <- sum(tmp[,j])
-  #     }
-  #   }
-  # }
 }
