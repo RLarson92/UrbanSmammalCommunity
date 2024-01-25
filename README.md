@@ -94,6 +94,6 @@ There is 1 subfolder and 1 file in this folder. The contents of this folder are 
 
 **./landscapes/connectivity.R:** R script for calculating habitat fragmentation (i.e., contagion index) for each trapping plot
 
-<h3>landscapes/tiffs</h3>
+<h3>landscapes/tifs</h3>
 
 This subfolder contains `.tif` files of the land cover of each small mammal trapping plot. There are 45 files in here, so I'm not going to list them all, but they are named after their site number: e.g., `1.tif`, `124.tif`, etc.
