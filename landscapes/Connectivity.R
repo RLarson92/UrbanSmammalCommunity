@@ -1,30 +1,35 @@
+###########################################################################################################
+#                                                                                                         #
+#                                 Code for calculating contagion index values                             #
+#                                          using `landscapemetrics`                                       #
+#                                                                                                         #
+#                                         Last edited: 25 Jan 2024                                        #
+#                                                                                                         #
+###########################################################################################################
+# You'll need to load the 'raster' and 'landscapemetrics' packages to perform this analysis
 library(raster)
 library(landscapemetrics)
 
-rasterList <- list.files("Z://Rachel_SmallMammals/ArcMap/Connectivity_Landscapes/TIFFS/", full.names = TRUE)
-rasterList <- rasterList[-46]
+# Code to list all the files in the '.tifs' subfolder and import them in the R workspace
+rasterList <- list.files("./tifs/", full.names = TRUE)
+rasterList <- rasterList[-46]  # this is some Windows file not part of the dataset
 
-allRAsters <- lapply(rasterList, raster)
+# telling R that all the files in rasterList are, in fact, rasters
+allRasters <- lapply(rasterList, raster)
 
+# creating an empty list item to store the results of the analysis in
 resultsList_contag <- list()
 
-for(i in 1:length(allRAsters)){
+# automating the calculation the contagion values for all 45 sites
+for(i in 1:length(allRasters)){
   resultsList_contag[[i]] <- lsm_l_contag(allRAsters[[i]])
 }
 
+# writing the results into that blank list and adding the site name
 results_contag <- rlist::list.rbind(resultsList_contag)
 results_contag$site <- rasterList
 
-write.csv(results_contag, "Z://Rachel_SmallMammals/R/PlotConnectivity_Contag.csv", row.names = FALSE)
-
-resultsList_aggri <- list()
-
-for(i in 1:length(allRAsters)){
-  resultsList_aggri[[i]] <- lsm_c_ai(allRAsters[[i]])
-}
-
-results_aggri <- rlist::list.rbind(resultsList_aggri)
-results_aggri <- subset(results_aggri, class!=0)
-results_aggri$site <- rasterList
-
-write.csv(results_aggri, "Z://Rachel_SmallMammals/R/PlotConnectivity_aggri.csv", row.names = FALSE)
+# writing the results to a .csv. I was lazy and just copied the values from this .csv
+# into the bigger .csv I have that has all the plot covariates, rather than creating
+# an R script to stitch them together
+write.csv(results_contag, "./data/contag.csv", row.names = FALSE)
