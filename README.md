@@ -40,7 +40,9 @@ There is 1 file and 2 folders in this folder
 There are 3 files in this subfolder
 
 **./data/obsVars/jDate.csv:** The Julian date of each night of small mammal trapping
+
 **./data/obsVars/Moon.csv:** The moon illumination (proportion full) on each night of trapping
+
 **./data/obsVars/Effort.csv:** The number of available traps (i.e., traps that remained undisturbed) on each night of trapping
 
 All files follow this format, with the jDate file as an example. Just sub out 'jDate' for 'moon' with the moon illumination data and 'effort' for the trap effort data:
@@ -75,3 +77,19 @@ All files follow this format. Cells that contain an 'NA' instead of a number mea
 | SU21_1 | numeric | The counts of individuals of that species for the 1st night of trapping during summer 2021                                                  |
 | ... | numeric | ...                                                |
 |y_x  | numeric | The counts of individuals of that species for the x night of trapping during y season                                     |
+
+---
+
+<div align="center"> <h3>functions</h3> </div>
+
+---
+
+There are 4 files in this folder, all utility functions that automate or declutter some of the R code
+
+**.functions/logit2prob.R:** Function script to convert a logit value to a probability
+
+**.functions/split_mcmc.R:** Function to split a model's MCMC matrix into a list of named objects, one for every parameter. Makes graphing results much easier. Credit for this code goes to [@mfidino] [(see his blog post here)](masonfidino.com/split_mcmc/)
+
+**.functions/wide_to_stacked.R:** Function to convert a wide-format data frame (i.e., one site per row with one column for each observation) into a stacked format data frame (one observation per row, with sites/seasons/etc. "stacked" on top of each other). Modified from code in [a vignette for the `umbs` R package](github.com/kenkellner/umbs/blob/master/vignettes/random-effects.Rmd).
+
+**.functions/wideObs_to_stacked.R:** Function script to convert observation-level covariate data from a wide format to a 'stacked' format. Different from `wide_to_stacked.R` in that it does not add a 'Species' column to the resulting dataframe. Modified from code in [a vignette for the `umbs` R package](github.com/kenkellner/umbs/blob/master/vignettes/random-effects.Rmd).
