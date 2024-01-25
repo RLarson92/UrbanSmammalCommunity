@@ -14,7 +14,7 @@ functions_to_load <- list.files("./functions/", full.names = TRUE)
 for(fn in functions_to_load){
   source(fn)
 }
-rm("my_inits")
+# load some libraries to tidy-up the data
 library(tidyr)
 library(readr)
 
@@ -23,9 +23,11 @@ library(readr)
 # read in the data
 data_sets <- list.files("./data/abunTables/", full.names = TRUE)
 df <- readr::read_csv(data_sets, id = "Species")
-dets <- df[ ,3:20] # 3:20 for full dataset, 3:11 for 2-season test
+dets <- df[ ,3:20]
 
 # stack the data, long-style
+# note: wide_to_stacked is a custom function that does require you to have
+# an object 'df' loaded with columns named 'Site' & 'Species'
 stack <- wide_to_stacked(dets, 3)
 
 # stack the replicates (nights) on top of each other and order the datasheet. 
@@ -68,11 +70,14 @@ siteCovs <- scale(site_covs[ ,2:5])
 pca <- princomp(siteCovs)
 pca$loadings
 # PC1: more + = canopy/herb/shrub; more - = humanMod
+# let's make our covariate data.frame
 covs_for_model <- cbind.data.frame("PC1" = pca$scores[ ,1],
                                    "contag" = scale(site_covs$contag),
                                    "site" = site_covs[ ,1])
 covs_for_model$site <- as.numeric(as.factor(covs_for_model$site))
+# saving the results of the PCA for later use
 write_csv(covs_for_model, "./data/covs_for_model.csv")
+# turn your covariate data.frame into a matrix
 covMatrix <- as.matrix(covs_for_model)
 rm(siteCovs, covs_for_model)
 
@@ -80,7 +85,9 @@ rm(siteCovs, covs_for_model)
 # Observation covariates are 3-D array [sites, nights, seasons]
 # We have 3 separate arrays, one for each covariate
 moon <- read.csv("./data/obsVars/Moon.csv", stringsAsFactors = FALSE)
-moon1 <- as.data.frame(moon[,2:19]) # to 19 for full dataset, to 10 for test
+moon1 <- as.data.frame(moon[,2:19])
+# 'wideObs_to_stacked' is a custom function for stacking the data long-style
+# it does require 'moon' to be loaded with a column named 'Site'
 moonStack <- wideObs_to_stacked(moon1, 3) 
 moon_long <- gather(moonStack, key = "night", value = "moon", night1:night3, factor_key = TRUE)
 moon_long$moon <- as.numeric(scale(moon_long$moon))
@@ -158,6 +165,7 @@ for(i in 1:nrow(effort_long)){
 rm(effort1, effortStack, effort_long, effort, moon)
 
 #### Generate "Season" Data ####
+# will assign a correct description for each season of data
 seasonData <- as.factor(c("spring","summer","fall","spring","summer","fall"))
 
 #### RUN MODEL ####
@@ -175,8 +183,8 @@ data_list <- list(
   nseason = max(n_long$Season),
   season = seasonData
 )
-# specify initial values
-# initial values for N should be maximum possible counts
+# specify initial values for N (abundance) and R (recruits)
+# initial values for N should be maximum possible counts, in our case 10
 N_init = array(10, dim = c(data_list$nspec, data_list$nsite, data_list$nseason))
 # set to NA for all seasons t>1 because we cannot know this (needs to be specified by R + S)
 N_init[,,2:6] <- NA
@@ -185,7 +193,7 @@ R_init = array(10, dim = c(data_list$nspec, data_list$nsite, data_list$nseason))
 # providing null values for t = 1 (i.e., no recruits yet)
 R_init[,,1] <- NA
 
-my_inits_colExt <- function(chain){
+my_inits <- function(chain){
   gen_list <- function(chain = chain){
     list(
       mu.beta0 = rnorm(1),
@@ -249,7 +257,7 @@ my_inits_colExt <- function(chain){
 library(runjags)
 my_start <- Sys.time()
 my_mod <- runjags::run.jags(
-  model = "./JAGS/dynamicCommunityModel_colExt.R",
+  model = "./JAGS/dynamicCommunityModel.R",
   monitor = c(# hyperprior (& non-species-specific) parameters
               "mu.beta0", "sig.beta0", "mu.beta1", "sig.beta1", 
               "mu.alpha0", "sig.alpha0", "alpha1", "alpha2", "alpha3", 
@@ -262,7 +270,7 @@ my_mod <- runjags::run.jags(
               ),
   data = data_list,
   n.chains = 3,
-  inits = my_inits_colExt,
+  inits = my_inits,
   burnin = 90000,
   sample = 20000,
   adapt = 3500,
@@ -271,7 +279,7 @@ my_mod <- runjags::run.jags(
   method = "parallel"
 )
 my_end <- Sys.time()
-saveRDS(my_mod, "./results/colExt_mod.RDS")
+saveRDS(my_mod, "./results/my_mod.RDS")
 
 #### SUMMARIZE MODEL ####
 summary(my_mod)
