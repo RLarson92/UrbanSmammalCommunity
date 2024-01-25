@@ -8,6 +8,14 @@ This `README` file includes information on the various scripts and datasets used
 
 ---
 
+<div align="center"> <h3>JAGS</h3> </div>
+
+---
+
+There is 1 file in this folder, `./JAGS/dynamicCommunityModel.R`, which is the Bayesian community abundance model we fit.
+
+---
+
 <div align="center"> <h3>data</h3> </div>
 
 ---
