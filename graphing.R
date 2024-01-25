@@ -1,6 +1,8 @@
 ####################################################################################
 #                                                                                  #
 #                     Code used to create Figures 2 - 4                            #
+#                                   and                                            #
+#                          Supplemental Figure 1                                   #
 #                                                                                  #
 #                        Last Updated: 25 Jan 2024                                 #
 #                                                                                  #
@@ -44,6 +46,39 @@ rm(mc_sub)
 dim(mc$beta1)
 # [1] 10000  6
 # the among-species terms (e.g., mu_beta0) will have a 1 as the 2nd term
+
+#####                               Species Richness                                    #####
+# collapse abundance estimates into occurrence data
+tmp <- mc$N
+tmp[tmp>0] <- 1
+# determine average occurrence probability across time
+tmp_avg <- apply(
+  tmp,
+  c(2,3),
+  mean
+)
+# sum occurrence probabilities across species
+Rich <- apply(
+  tmp_avg,
+  2,
+  sum
+)
+
+# Graphing
+data<-data.frame(cbind(covs_for_model$PC1,
+                       Rich))
+jpeg("./results/richness.jpeg", width = 6, height = 4, units = 'in', res = 300)
+ggplot(data = data, aes(x=V1,y=Rich)) +
+  geom_point(color="#5f5f5f")+
+  geom_smooth(method = 'lm', color='#000000') +
+  scale_x_continuous(expand = c(0.01,0)) +
+  scale_y_continuous(limits=c(1,4), expand=c(0,0)) +
+  labs(x="PC1", y="Species Richness") +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+        axis.text.y=element_text(size=7), axis.text.x=element_text(size=7), 
+        axis.title=element_text(size=9))
+dev.off()
 
 #####                            Persistence (phi[i,j,t])                                   #####
 ##### PC1 ( - humanMod -- + Other) #####
