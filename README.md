@@ -6,21 +6,19 @@ Larson, R.N., and H. A. Sander. Variation in species-specific responses to habit
 
 This `README` file includes information on the various scripts and datasets used for this analysis. Not every data source is saved in this repository (e.g., GIS data). The manuscript contains citations for where to access the geospatial data.
 
----
 
-<div align="center"> <h3>JAGS</h3> </div>
+<h2>Scripts</h2> </div>
 
----
+**./fit_model.R:** R script that cleans and processes the data, runs the community abundance model, and summarizes the model output
 
-There is 1 file in this folder, `./JAGS/dynamicCommunityModel.R`, which is the Bayesian community abundance model we fit.
+<h2>Folders</h2>
+<h3>JAGS</h3>
 
----
+There is 1 file in this folder, `./JAGS/dynamicCommunityModel.R`, which is the Bayesian community abundance model code to pass to JAGS.
 
-<div align="center"> <h3>data</h3> </div>
+<h3>data</h3>
 
----
-
-There is 1 file and 2 folders in this folder
+There is 1 file and 2 subfolders in this folder
 
 **./data/siteCovs.csv:** The site covariates for each of the 45 small mammal trapping plots.
 
@@ -35,7 +33,7 @@ There is 1 file and 2 folders in this folder
 | turfgrass | numeric | The average percent cover of turfgrass on each plot |
 | contag    | numeric | The contagion index of each plot (i.e., a measure of habitat fragmentation)                                        |
 
-<h2>./data/obsVars</h2>
+<h3>data/obsVars</h3>
 
 There are 3 files in this subfolder
 
@@ -56,7 +54,7 @@ All files follow this format, with the jDate file as an example. Just sub out 'j
 | ... | numeric | ...                                                |
 | jDate_y_x  | numeric | The Julian Date of the x night of trapping during y season                                                 |
 
-<h2>./data/abunTables</h2>
+<h3>data/abunTables</h3>
 
 There are 6 files in this subfolder
 
@@ -78,11 +76,7 @@ All files follow this format. Cells that contain an 'NA' instead of a number mea
 | ... | numeric | ...                                                |
 |y_x  | numeric | The counts of individuals of that species for the x night of trapping during y season                                     |
 
----
-
-<div align="center"> <h3>functions</h3> </div>
-
----
+<h3>functions</h3>
 
 There are 4 files in this folder, all utility functions that automate or declutter some of the R code
 
@@ -93,3 +87,13 @@ There are 4 files in this folder, all utility functions that automate or declutt
 **.functions/wide_to_stacked.R:** Function to convert a wide-format data frame (i.e., one site per row with one column for each observation) into a stacked format data frame (one observation per row, with sites/seasons/etc. "stacked" on top of each other). Modified from code in [a vignette for the `umbs` R package](github.com/kenkellner/umbs/blob/master/vignettes/random-effects.Rmd).
 
 **.functions/wideObs_to_stacked.R:** Function script to convert observation-level covariate data from a wide format to a 'stacked' format. Different from `wide_to_stacked.R` in that it does not add a 'Species' column to the resulting dataframe. Modified from code in [a vignette for the `umbs` R package](github.com/kenkellner/umbs/blob/master/vignettes/random-effects.Rmd).
+
+<h3>landscapes</h3>
+
+There is 1 subfolder and 1 file in this folder. The contents of this folder are for creating the contagion index values for each site (see the manuscript for more details).
+
+**./landscapes/connectivity.R:** R script for calculating habitat fragmentation (i.e., contagion index) for each trapping plot
+
+<h3>landscapes/tiffs</h3>
+
+This subfolder contains `.tif` files of the land cover of each small mammal trapping plot. There are 45 files in here, so I'm not going to list them all, but they are named after their site number: e.g., `1.tif`, `124.tif`, etc.
