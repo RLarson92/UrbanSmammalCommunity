@@ -2,7 +2,7 @@
 #                                                #
 #     Dynamic Community Abundance Model          #
 #                                                #
-#     Last updated: 25 JAN 2024                  #
+#     Last updated: 28 JAN 2024                  #
 #                                                #
 ##################################################
 # This model is a community abundance model with fully modeled 'recruitment' (births + 
