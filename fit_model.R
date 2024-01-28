@@ -280,6 +280,8 @@ my_mod <- runjags::run.jags(
   method = "parallel"
 )
 my_end <- Sys.time()
+#create a results folder and save model output there
+dir.create("results")
 saveRDS(my_mod, "./results/my_mod.RDS")
 
 #### SUMMARIZE MODEL ####
