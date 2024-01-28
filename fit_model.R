@@ -15,7 +15,7 @@ for(fn in functions_to_load){
   source(fn)
 }
 # load some libraries to tidy-up the data
-library(tidyr)
+library(wrapr)
 library(readr)
 
 #### Read & Process Count Data ####
@@ -33,10 +33,10 @@ stack <- wide_to_stacked(dets, 3)
 # stack the replicates (nights) on top of each other and order the datasheet. 
 # Data should be in order by species, then season, then site
 n_long <- gather(stack, key = "night", value = "N", night1:night3, factor_key = TRUE)
-n_long <- n_long[order(
+n_long <- n_long[orderv(c(
   n_long[,"Species"], 
   n_long[,"Season"],
-  n_long[,"Site"]), ]
+  n_long[,"Site"])), ]
 n_long$night <- as.numeric(n_long$night)
 n_long$Site <- as.numeric(as.factor(n_long$Site))
 n_long$Species <- as.numeric(as.factor(n_long$Species))
