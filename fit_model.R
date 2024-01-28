@@ -16,6 +16,7 @@ for(fn in functions_to_load){
 }
 # load some libraries to tidy-up the data
 library(wrapr)
+library(tidyr)
 library(readr)
 
 #### Read & Process Count Data ####
