@@ -24,6 +24,10 @@ resultsList_contag <- list()
 for(i in 1:length(allRasters)){
   resultsList_contag[[i]] <- lsm_l_contag(allRasters[[i]])
 }
+# a couple of the trap sites contain only 1 land cover class, and will cause a warning
+# from landscapemetrics. When inspected visually in ArcMap or the like, you'll see their
+# contagion value should be 0 (i.e., low interspersion and high "clumping"). I hand-edited
+# the '0's into my covariate datafile
 
 # writing the results into that blank list and adding the site name
 results_contag <- rlist::list.rbind(resultsList_contag)
