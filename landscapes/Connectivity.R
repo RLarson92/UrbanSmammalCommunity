@@ -22,7 +22,7 @@ resultsList_contag <- list()
 
 # automating the calculation the contagion values for all 45 sites
 for(i in 1:length(allRasters)){
-  resultsList_contag[[i]] <- lsm_l_contag(allRAsters[[i]])
+  resultsList_contag[[i]] <- lsm_l_contag(allRasters[[i]])
 }
 
 # writing the results into that blank list and adding the site name
