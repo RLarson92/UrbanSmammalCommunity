@@ -111,13 +111,13 @@ pred_phi <- array(
 # dimensions should be: number of MCMC interations by length of sequence of predictor variable
 # by number of species
 # fill it in
-pred_phi[,,1] <- exp(cbind(mc$mu.phi0[,1],mc$mu.phi1[,1],mc$mu.phi2[,1]) %*% pred_mat)
-pred_phi[,,2] <- exp(cbind(mc$phi0[,1],mc$phi1[,1],mc$phi2[,1]) %*% pred_mat)
-pred_phi[,,3] <- exp(cbind(mc$phi0[,2],mc$phi1[,2],mc$phi2[,2]) %*% pred_mat)
-pred_phi[,,4] <- exp(cbind(mc$phi0[,3],mc$phi1[,3],mc$phi2[,3]) %*% pred_mat)
-pred_phi[,,5] <- exp(cbind(mc$phi0[,4],mc$phi1[,4],mc$phi2[,4]) %*% pred_mat)
-pred_phi[,,6] <- exp(cbind(mc$phi0[,5],mc$phi1[,5],mc$phi2[,5]) %*% pred_mat)
-pred_phi[,,7] <- exp(cbind(mc$phi0[,6],mc$phi1[,6],mc$phi2[,6]) %*% pred_mat)
+pred_phi[,,1] <- cbind(mc$mu.phi0[,1],mc$mu.phi1[,1],mc$mu.phi2[,1]) %*% pred_mat
+pred_phi[,,2] <- cbind(mc$phi0[,1],mc$phi1[,1],mc$phi2[,1]) %*% pred_mat
+pred_phi[,,3] <- cbind(mc$phi0[,2],mc$phi1[,2],mc$phi2[,2]) %*% pred_mat
+pred_phi[,,4] <- cbind(mc$phi0[,3],mc$phi1[,3],mc$phi2[,3]) %*% pred_mat
+pred_phi[,,5] <- cbind(mc$phi0[,4],mc$phi1[,4],mc$phi2[,4]) %*% pred_mat
+pred_phi[,,6] <- cbind(mc$phi0[,5],mc$phi1[,5],mc$phi2[,5]) %*% pred_mat
+pred_phi[,,7] <- cbind(mc$phi0[,6],mc$phi1[,6],mc$phi2[,6]) %*% pred_mat
 
 # convert to probability
 prob_phi <- apply(pred_phi,
@@ -206,13 +206,13 @@ pred_phi <- array(
     7
   )
 )
-pred_phi[,,1] <- exp(cbind(mc$mu.phi0[,1],mc$mu.phi1[,1],mc$mu.phi2[,1]) %*% pred_mat)
-pred_phi[,,2] <- exp(cbind(mc$phi0[,1],mc$phi1[,1],mc$phi2[,1]) %*% pred_mat)
-pred_phi[,,3] <- exp(cbind(mc$phi0[,2],mc$phi1[,2],mc$phi2[,2]) %*% pred_mat)
-pred_phi[,,4] <- exp(cbind(mc$phi0[,3],mc$phi1[,3],mc$phi2[,3]) %*% pred_mat)
-pred_phi[,,5] <- exp(cbind(mc$phi0[,4],mc$phi1[,4],mc$phi2[,4]) %*% pred_mat)
-pred_phi[,,6] <- exp(cbind(mc$phi0[,5],mc$phi1[,5],mc$phi2[,5]) %*% pred_mat)
-pred_phi[,,7] <- exp(cbind(mc$phi0[,6],mc$phi1[,6],mc$phi2[,6]) %*% pred_mat)
+pred_phi[,,1] <- cbind(mc$mu.phi0[,1],mc$mu.phi1[,1],mc$mu.phi2[,1]) %*% pred_mat
+pred_phi[,,2] <- cbind(mc$phi0[,1],mc$phi1[,1],mc$phi2[,1]) %*% pred_mat
+pred_phi[,,3] <- cbind(mc$phi0[,2],mc$phi1[,2],mc$phi2[,2]) %*% pred_mat
+pred_phi[,,4] <- cbind(mc$phi0[,3],mc$phi1[,3],mc$phi2[,3]) %*% pred_mat
+pred_phi[,,5] <- cbind(mc$phi0[,4],mc$phi1[,4],mc$phi2[,4]) %*% pred_mat
+pred_phi[,,6] <- cbind(mc$phi0[,5],mc$phi1[,5],mc$phi2[,5]) %*% pred_mat
+pred_phi[,,7] <- cbind(mc$phi0[,6],mc$phi1[,6],mc$phi2[,6]) %*% pred_mat
 prob_phi <- apply(pred_phi,
                   c(2,3),
                   logit2prob)
