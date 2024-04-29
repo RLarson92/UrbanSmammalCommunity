@@ -31,8 +31,16 @@ model{
   sig.gamma0 <- 1 / sqrt(tau.gamma0)
   mu.gamma1 ~ dnorm(0, 0.1)
   tau.gamma1 ~ dgamma(1, 1)
-  sig.gamma1 <- 1 / sqrt(tau.gamma1)                
-  gamma2 ~ dnorm(0, 0.1)                   # technically not hyperprior but here for convenience
+  sig.gamma1 <- 1 / sqrt(tau.gamma1)
+  # because season is dummy-coded, we have a different coefficient for each season
+  # although season isn't a hyper prior, it's here for convenience
+  for (tmpk in 1:2){
+    tmp_gamma[tmpk] ~ dnorm(0,0.1)
+  }
+  gamma2[1] <- 0
+  for (z in 2:nseason){
+    gamma2[z] <- tmp_gamma[z-1]
+  }
   ## Species-Specific Priors
   # species-specific coefficients
   for (i in 1:nspec) {
@@ -63,12 +71,12 @@ model{
       }
 
   # State Process (transition model)
-      for (t in 2:nseason) {
+      for (t in 2:nSP) {
         N[i,j,t] <- S[i,j,t] + R[i,j,t]  # 'S' for survivors, 'R' for recruits
         S[i,j,t] ~ dbin(phi[i,j,t], N[i,j,t-1])
         logit(phi[i,j,t]) <- phi0[i] + phi1[i]*PC1[j] + phi2[i]*contag[j]
         R[i,j,t] ~ dpois(gamma[i,j,t])
-        log(gamma[i,j,t]) <- gamma0[i] + gamma1[i]*contag[j] + gamma2*season[t]
+        log(gamma[i,j,t]) <- gamma0[i] + gamma1[i]*contag[j] + gamma2[season[t]]
   # Observation Process
         for (k in 1:nNight) {
           logit(p[i,j,k,t]) <- alpha0[i] + alpha1*moon[j,k,t] + alpha2*jDate[j,k,t] + alpha3*effort[j,k,t]
