@@ -4,7 +4,7 @@
 #                                   and                                            #
 #                          Supplemental Figure 1                                   #
 #                                                                                  #
-#                        Last Updated: 25 Jan 2024                                 #
+#                        Last Updated: 29 APR 2024                                 #
 #                                                                                  #
 ####################################################################################
 
@@ -47,33 +47,28 @@ dim(mc$beta1)
 # [1] 10000  6
 # the among-species terms (e.g., mu_beta0) will have a 1 as the 2nd term
 
-#####                               Species Richness                                    #####
+#####                               Species Diveristy                                    #####
 # collapse abundance estimates into occurrence data
 tmp <- mc$N
-tmp[tmp>0] <- 1
-# determine average occurrence probability across time
+# determine average abundance probability of each species across time
 tmp_avg <- apply(
   tmp,
   c(2,3),
   mean
 )
-# sum occurrence probabilities across species
-Rich <- apply(
-  tmp_avg,
-  2,
-  sum
-)
-
+comms <- t(tmp_avg)
+# calculate index
+H <- vegan::diversity(comms, index = "shannon")
 # Graphing
-data<-data.frame(cbind(covs_for_model$PC1,
-                       Rich))
-jpeg("./results/richness.jpeg", width = 6, height = 4, units = 'in', res = 300)
-ggplot(data = data, aes(x=V1,y=Rich)) +
+data<-rbind(data.frame(x = covs_for_model$PC1,
+                       y = H))
+jpeg("./results/shannons.jpeg", width = 6, height = 4, units = 'in', res = 300)
+ggplot(data = data, aes(x=x,y=y)) +
   geom_point(color="#5f5f5f")+
   geom_smooth(method = 'lm', color='#000000') +
   scale_x_continuous(expand = c(0.01,0)) +
-  scale_y_continuous(limits=c(1,4), expand=c(0,0)) +
-  labs(x="PC1", y="Species Richness") +
+  scale_y_continuous(limits=c(0,2), expand=c(0,0)) +
+  labs(x="PC1", y="Shannon's Diversity Index") +
   theme_bw() +
   theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
         axis.text.y=element_text(size=7), axis.text.x=element_text(size=7), 
@@ -301,7 +296,7 @@ predV <- seq(-1.33, 2.164393, length.out = 200)
 pred_mat <- cbind(
   1,
   predV,
-  3      # transition from spring to summer 
+  1      # because season is 'dummy-coded' we'll pull the correct gammma2 for the math below
 )
 pred_mat <- t(pred_mat)
 pred_gamma <- array(
@@ -312,13 +307,13 @@ pred_gamma <- array(
     7
   )
 )
-pred_gamma[,,1] <- exp(cbind(mc$mu.gamma0[,1],mc$mu.gamma1[,1],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,2] <- exp(cbind(mc$gamma0[,1],mc$gamma1[,1],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,3] <- exp(cbind(mc$gamma0[,2],mc$gamma1[,2],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,4] <- exp(cbind(mc$gamma0[,3],mc$gamma1[,3],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,5] <- exp(cbind(mc$gamma0[,4],mc$gamma1[,4],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,6] <- exp(cbind(mc$gamma0[,5],mc$gamma1[,5],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,7] <- exp(cbind(mc$gamma0[,6],mc$gamma1[,6],mc$gamma2[,1]) %*% pred_mat)
+pred_gamma[,,1] <- exp(cbind(mc$mu.gamma0[,1],mc$mu.gamma1[,1],mc$gamma2[,3]) %*% pred_mat) # 3 = spring to summer
+pred_gamma[,,2] <- exp(cbind(mc$gamma0[,1],mc$gamma1[,1],mc$gamma2[,3]) %*% pred_mat)
+pred_gamma[,,3] <- exp(cbind(mc$gamma0[,2],mc$gamma1[,2],mc$gamma2[,3]) %*% pred_mat)
+pred_gamma[,,4] <- exp(cbind(mc$gamma0[,3],mc$gamma1[,3],mc$gamma2[,3]) %*% pred_mat)
+pred_gamma[,,5] <- exp(cbind(mc$gamma0[,4],mc$gamma1[,4],mc$gamma2[,3]) %*% pred_mat)
+pred_gamma[,,6] <- exp(cbind(mc$gamma0[,5],mc$gamma1[,5],mc$gamma2[,3]) %*% pred_mat)
+pred_gamma[,,7] <- exp(cbind(mc$gamma0[,6],mc$gamma1[,6],mc$gamma2[,3]) %*% pred_mat)
 
 trueGamma <- apply(
   pred_gamma,
@@ -387,7 +382,7 @@ p3 <- ggplot(ContagSP, aes(x=contag, y=gamma)) +
 pred_mat <- cbind(
   1,
   predV,
-  1      # transition from summer to fall
+  1      
 )
 pred_mat <- t(pred_mat)
 pred_gamma <- array(
@@ -398,7 +393,7 @@ pred_gamma <- array(
     7
   )
 )
-pred_gamma[,,1] <- exp(cbind(mc$mu.gamma0[,1],mc$mu.gamma1[,1],mc$gamma2[,1]) %*% pred_mat)
+pred_gamma[,,1] <- exp(cbind(mc$mu.gamma0[,1],mc$mu.gamma1[,1],mc$gamma2[,1]) %*% pred_mat) # 1 = summer to fall
 pred_gamma[,,2] <- exp(cbind(mc$gamma0[,1],mc$gamma1[,1],mc$gamma2[,1]) %*% pred_mat)
 pred_gamma[,,3] <- exp(cbind(mc$gamma0[,2],mc$gamma1[,2],mc$gamma2[,1]) %*% pred_mat)
 pred_gamma[,,4] <- exp(cbind(mc$gamma0[,3],mc$gamma1[,3],mc$gamma2[,1]) %*% pred_mat)
@@ -479,7 +474,7 @@ p4 <- ggplot(ContagSU, aes(x=contag, y=gamma)) +
 pred_mat <- cbind(
   1,
   predV,
-  2      # transition from fall to next spring
+  1
 )
 pred_mat <- t(pred_mat)
 pred_gamma <- array(
@@ -490,13 +485,13 @@ pred_gamma <- array(
     7
   )
 )
-pred_gamma[,,1] <- exp(cbind(mc$mu.gamma0[,1],mc$mu.gamma1[,1],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,2] <- exp(cbind(mc$gamma0[,1],mc$gamma1[,1],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,3] <- exp(cbind(mc$gamma0[,2],mc$gamma1[,2],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,4] <- exp(cbind(mc$gamma0[,3],mc$gamma1[,3],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,5] <- exp(cbind(mc$gamma0[,4],mc$gamma1[,4],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,6] <- exp(cbind(mc$gamma0[,5],mc$gamma1[,5],mc$gamma2[,1]) %*% pred_mat)
-pred_gamma[,,7] <- exp(cbind(mc$gamma0[,6],mc$gamma1[,6],mc$gamma2[,1]) %*% pred_mat)
+pred_gamma[,,1] <- exp(cbind(mc$mu.gamma0[,1],mc$mu.gamma1[,1],mc$gamma2[,2]) %*% pred_mat) #2 = fall to next spring
+pred_gamma[,,2] <- exp(cbind(mc$gamma0[,1],mc$gamma1[,1],mc$gamma2[,2]) %*% pred_mat)
+pred_gamma[,,3] <- exp(cbind(mc$gamma0[,2],mc$gamma1[,2],mc$gamma2[,2]) %*% pred_mat)
+pred_gamma[,,4] <- exp(cbind(mc$gamma0[,3],mc$gamma1[,3],mc$gamma2[,2]) %*% pred_mat)
+pred_gamma[,,5] <- exp(cbind(mc$gamma0[,4],mc$gamma1[,4],mc$gamma2[,2]) %*% pred_mat)
+pred_gamma[,,6] <- exp(cbind(mc$gamma0[,5],mc$gamma1[,5],mc$gamma2[,2]) %*% pred_mat)
+pred_gamma[,,7] <- exp(cbind(mc$gamma0[,6],mc$gamma1[,6],mc$gamma2[,2]) %*% pred_mat)
 
 trueGamma <- apply(
   pred_gamma,
