@@ -2,7 +2,7 @@
 #                                                #
 #     Dynamic Community Abundance Model          #
 #                                                #
-#     Last updated: 28 JAN 2024                  #
+#     Last updated: 29 APR 2024                  #
 #                                                #
 ##################################################
 # This model is a community abundance model with fully modeled 'recruitment' (births + 
@@ -181,8 +181,9 @@ data_list <- list(
   jDate = jDateArray,
   effort = effortArray,
   y = my_array, 
-  nseason = max(n_long$Season),
-  season = seasonData
+  nSP = max(n_long$Season),
+  season = seasonData,
+  nseason = 3
 )
 # specify initial values for N (abundance) and R (recruits)
 # initial values for N should be maximum possible counts, in our case 10
@@ -216,7 +217,7 @@ my_inits <- function(chain){
       tau.gamma0 = rgamma(1,1,1),
       mu.gamma1 = rnorm(1),
       tau.gamma1 = rgamma(1,1,1),
-      gamma2 = rnorm(1),
+      tmp_gamma = rnorm(2),
       beta0 = rnorm(data_list$nspec),
       beta1 = rnorm(data_list$nspec),
       alpha0 = rnorm(data_list$nspec),
@@ -272,7 +273,7 @@ my_mod <- runjags::run.jags(
   data = data_list,
   n.chains = 3,
   inits = my_inits,
-  burnin = 90000,
+  burnin = 150000,
   sample = 20000,
   adapt = 3500,
   modules = "glm",
