@@ -1,7 +1,7 @@
 # UrbanSmammalCommunity
 A repository that contains the data and code for:
 
-Larson, R.N., and H. A. Sander. Variation in species-specific responses to habitat fragmentation and land cover structure urban small mammal communities. *Journal of Mammalogy*. (In review)
+Larson, R.N., and H. A. Sander. Variation in species-specific responses to habitat fragmentation and land cover structure urban small mammal communities. *Journal of Mammalogy*. 105:1-13.
 
 
 This `README` file includes information on the various scripts and datasets used for this analysis. Not every data source is saved in this repository (e.g., GIS data). The manuscript contains citations for where to access the geospatial data.
